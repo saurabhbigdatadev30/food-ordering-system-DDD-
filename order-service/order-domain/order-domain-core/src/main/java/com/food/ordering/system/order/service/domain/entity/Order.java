@@ -24,7 +24,11 @@ public class Order extends AggregateRoot<OrderId> {
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
     public void initializeOrder() {
-        setId(new OrderId(UUID.randomUUID()));
+       /* OrderID is the identifier of the Aggregate Root (Order) , so we set it here
+          when we initialize the order , calling the setId method of the BaseEntity class.
+          Similarly, we set the other value objects  for the order.
+        */
+        super.setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;
         initializeOrderItems();

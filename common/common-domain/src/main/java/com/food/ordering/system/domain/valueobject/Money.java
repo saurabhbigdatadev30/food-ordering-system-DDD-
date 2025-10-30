@@ -13,21 +13,35 @@ public class Money {
         this.amount = amount;
     }
 
+    // Check if the amount is greater than zero
     public boolean isGreaterThanZero() {
         return this.amount != null && this.amount.compareTo(BigDecimal.ZERO) > 0;
     }
-
+// Check if the amount is greater than the amount of another Money object
     public boolean isGreaterThan(Money money) {
         return this.amount != null && this.amount.compareTo(money.getAmount()) > 0;
     }
 
+
     public Money add(Money money) {
+        Objects.requireNonNull(money, "Money  must not be null");
+        if(!isGreaterThanZero()){
+            throw new IllegalArgumentException("Amount must be greater than zero to perform addition!");
+        }
         return new Money(setScale(this.amount.add(money.getAmount())));
     }
 
     public Money subtract(Money money) {
+        Objects.requireNonNull(money, "Money  must not be null");
+        if (!isGreaterThan(money)) {
+            throw new IllegalArgumentException("Please enter valid amount to subtract!");
+        }
         return new Money(setScale(this.amount.subtract(money.getAmount())));
     }
+
+
+
+
 
     public Money multiply(int multiplier) {
         return new Money(setScale(this.amount.multiply(new BigDecimal(multiplier))));
