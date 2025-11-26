@@ -6,42 +6,49 @@ import java.util.Objects;
 
 public class Money {
     private final BigDecimal amount;
-
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
-    public Money(BigDecimal amount) {
+   /*
+       public Money(BigDecimal amount)
+       {
         this.amount = amount;
+    }*/
+
+    public Money(BigDecimal amount) {
+        this.amount = setScale(Objects.requireNonNull(amount, "amount must not be null"));
     }
 
-    // Check if the amount is greater than zero
+    // Check if the amount is greater than zero , so first check if amount is not null and then compare it to > ZERO
     public boolean isGreaterThanZero() {
         return this.amount != null && this.amount.compareTo(BigDecimal.ZERO) > 0;
     }
+
+
 // Check if the amount is greater than the amount of another Money object
     public boolean isGreaterThan(Money money) {
-        return this.amount != null && this.amount.compareTo(money.getAmount()) > 0;
+        // Ensure the money object &  its amount are not null
+        Objects.requireNonNull(money, "Money must not be null");
+        Objects.requireNonNull(money.getAmount(), "Money amount must not be null");
+        return this.amount != null && this.amount.compareTo(money.getAmount()) >= 0;
     }
 
 
     public Money add(Money money) {
         Objects.requireNonNull(money, "Money  must not be null");
-        if(!isGreaterThanZero()){
-            throw new IllegalArgumentException("Amount must be greater than zero to perform addition!");
+        Objects.requireNonNull(money.getAmount(), "Money amount must not be null");
+        if (this.amount.compareTo(BigDecimal.ZERO) < 0 || money.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Cannot add negative Money amounts: " + this.amount + " + " + money.getAmount());
         }
         return new Money(setScale(this.amount.add(money.getAmount())));
     }
 
     public Money subtract(Money money) {
-        Objects.requireNonNull(money, "Money  must not be null");
+     Objects.requireNonNull(money, "Money must not be null");
         if (!isGreaterThan(money)) {
-            throw new IllegalArgumentException("Please enter valid amount to subtract!");
+          throw new IllegalArgumentException("Cannot subtract " + money.getAmount() + ": result would be negative. Current amount: " + this.amount);
         }
         return new Money(setScale(this.amount.subtract(money.getAmount())));
     }
-
-
-
-
 
     public Money multiply(int multiplier) {
         return new Money(setScale(this.amount.multiply(new BigDecimal(multiplier))));

@@ -8,12 +8,18 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+<!--
+    The order-domain-core module has only dependency to the common-domain module.
+     We define the abstract BaseEntity, AggregateRoot, BaseID and other shared domain classes here.
+-->
     <artifactId>order-domain-core</artifactId>
 
     <properties>
     </properties>
 
+    <!-- Add the dependency to common-domain module
+        We first add this is the dependencyManagement section of the parent pom.xml (order-domain/pom.xml) with version defined there.
+    -->
     <dependencies>
         <dependency>
             <groupId>com.food.ordering.system</groupId>

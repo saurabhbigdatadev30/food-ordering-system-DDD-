@@ -5,6 +5,10 @@ import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 
+/*
+ 1. OrderItem extends BaseEntity<ID> and sets the ID field to = OrderItemId .
+ 2. The BaseEntity class overrides equals and hashCode methods based on the entity's identifier [OrderItemId].
+ */
 public class OrderItem extends BaseEntity<OrderItemId> {
     private OrderId orderId;
     private final Product product;
@@ -24,11 +28,12 @@ public class OrderItem extends BaseEntity<OrderItemId> {
     }
 
     private OrderItem(Builder builder) {
+        // Initialize the BaseEntity's id with OrderItemId from the builder
         super.setId(builder.orderItemId);
-        product = builder.product;
-        quantity = builder.quantity;
-        price = builder.price;
-        subTotal = builder.subTotal;
+        this.product = builder.product;
+        this.quantity = builder.quantity;
+        this.price = builder.price;
+        this.subTotal = builder.subTotal;
     }
 
     public static Builder builder() {

@@ -2,6 +2,10 @@ package com.food.ordering.system.domain.valueobject;
 
 import java.util.Objects;
 
+/*
+    BaseId is a generic abstract class that represents a value object for unique identifiers.
+    It encapsulates a value of type T and provides methods for equality comparison and hash code generation.
+ */
 public abstract class BaseId<T> {
     private final T value;
 

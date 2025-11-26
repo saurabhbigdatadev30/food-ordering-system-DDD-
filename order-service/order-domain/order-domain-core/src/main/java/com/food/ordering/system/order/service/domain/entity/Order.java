@@ -10,24 +10,31 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 import java.util.List;
 import java.util.UUID;
 
+/*
+   1.  The ID property of AggregateRoot<ID> extends BaseEntity<ID> will be set to OrderId VO .
+       This will make sure that the getId() and setId() methods of AggregateRoot will use OrderId type
+       [compile time checking].
+   2.   The BaseEntity<OrderId> is extended by AggregateRoot<OrderId> .
+        So Order will inherit the getId() and setId() [to Set the Identifier] methods from BaseEntity<OrderId> class.
+ */
 public class Order extends AggregateRoot<OrderId> {
     private final CustomerId customerId;
     private final RestaurantId restaurantId;
     private final StreetAddress deliveryAddress;
     private final Money price;
     private final List<OrderItem> items;
-
     private TrackingId trackingId;
     private OrderStatus orderStatus;
     private List<String> failureMessages;
 
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
+    /*
+      Initialize the ValueObjects [ OrderId,TrackingId, OrderStatus and initializing OrderItem]
+      Set the initial state of the Order Aggregate Root to PENDING when a new order is created.
+     */
     public void initializeOrder() {
-       /* OrderID is the identifier of the Aggregate Root (Order) , so we set it here
-          when we initialize the order , calling the setId method of the BaseEntity class.
-          Similarly, we set the other value objects  for the order.
-        */
+        // Generate a new unique OrderId and set it to the Order AggregateRoot and BaseEntity<OrderId>
         super.setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;

@@ -19,7 +19,11 @@
         <version>2.6.7</version>
         <relativePath/>
     </parent>
-
+<!--
+     The <groupID> com.food.ordering.system is used throughout all modules to ensure consistency.
+     For example in the order-domain-core module, the root package we create is com.food.ordering.system.
+     We then further add com.food.ordering.system.order.domain.core
+  -->
     <groupId>com.food.ordering.system</groupId>
     <artifactId>food-ordering-system</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -45,6 +49,12 @@
                 <artifactId>outbox</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- order service contains the modules :-
+                   order-application
+                   order-domain ->  Further contains [order-domain-core , order-application-service]
+                   order-dataaccess
+                   order-messaging
+               -->
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
                 <artifactId>order-domain-core</artifactId>
