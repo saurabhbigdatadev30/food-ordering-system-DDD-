@@ -29,12 +29,14 @@ public class Order extends AggregateRoot<OrderId> {
 
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
-    /*
-      Initialize the ValueObjects [ OrderId,TrackingId, OrderStatus and initializing OrderItem]
-      Set the initial state of the Order Aggregate Root to PENDING when a new order is created.
+    /**
+       1.  Initialize the ValueObjects [OrderId ,TrackingId, OrderStatus & initializing OrderItem]
+       2.  Set the initial state of the Order Aggregate Root to PENDING when a new order is created.
+       3.  Since Order extends AggregateRoot<OrderId> which extends BaseEntity<OrderId>,
+       4.  we can use the setId(new OrderID(random)) method of BaseEntity<OrderId> to set the Order
      */
     public void initializeOrder() {
-        // Generate a new unique OrderId and set it to the Order AggregateRoot and BaseEntity<OrderId>
+     // Initialize the Identifier of the Order Entity (Value Object = OrderId)  using BaseEntity's setId() method
         super.setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;
