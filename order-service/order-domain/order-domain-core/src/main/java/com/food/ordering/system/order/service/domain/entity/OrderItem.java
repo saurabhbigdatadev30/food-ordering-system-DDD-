@@ -6,11 +6,14 @@ import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 
 /*
- 1. OrderItem extends BaseEntity<ID> and sets the ID field to = OrderItemId .
- 2. The BaseEntity class overrides equals and hashCode methods based on the entity's identifier [OrderItemId].
+ 1. OrderItem extends BaseEntity<ID> , sets the ID field to = OrderItemId . So the setId(..) method will accept OrderItemId type.
+ 2. So the OrderItem class inherits the equals and hashcode methods from BaseEntity class which compares the identifier of the entity.
+    on OrderItemId.
+ 3. The OrderItem class has a method initializeOrderItem(..) which sets the orderId and also calls the setId(..) method
+     of BaseEntity to set the OrderItemId.
  */
 public class OrderItem extends BaseEntity<OrderItemId> {
-    private OrderId orderId;
+    private  OrderId orderId;
     private final Product product;
     private final int quantity;
     private final Money price;
@@ -27,6 +30,11 @@ public class OrderItem extends BaseEntity<OrderItemId> {
                 price.multiply(quantity).equals(subTotal);
     }
 
+    /**
+     1.Constructor is private and can only be called from the Builder
+     2.We use the Builder pattern to create instances of OrderItem class.
+     3.The Id of the BaseEntity is set using the setId method from the BaseEntity class & passed the OrderItemId from the Builder.
+     */
     private OrderItem(Builder builder) {
         // Initialize the BaseEntity's id with OrderItemId from the builder
         super.setId(builder.orderItemId);

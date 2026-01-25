@@ -27,6 +27,9 @@
     <groupId>com.food.ordering.system</groupId>
     <artifactId>food-ordering-system</artifactId>
     <version>1.0-SNAPSHOT</version>
+      <!-- Packaging in pom , since it does not make sense to create jar for the base project.
+           This is a container that will contain submodules. We use packaging as pom in such cases where no artifact.
+         -->
     <packaging>pom</packaging>
 
     <properties>
@@ -170,7 +173,7 @@
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
                 <artifactId>kafka-consumer</artifactId>
-                <version>${project.version}</version>
+                <version>${pr oject.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>

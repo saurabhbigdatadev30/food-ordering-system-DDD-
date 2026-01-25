@@ -10,12 +10,17 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 import java.util.List;
 import java.util.UUID;
 
-/*
-   1.  The ID property of AggregateRoot<ID> extends BaseEntity<ID> will be set to OrderId VO .
-       This will make sure that the getId() and setId() methods of AggregateRoot will use OrderId type
-       [compile time checking].
-   2.   The BaseEntity<OrderId> is extended by AggregateRoot<OrderId> .
-        So Order will inherit the getId() and setId() [to Set the Identifier] methods from BaseEntity<OrderId> class.
+
+/**
+    1.Order class is the AggregateRoot , so it extends the AggregateRoot<OrderId> .
+    2.The generic type parameter <ID> in AggregateRoot<ID> & in its superclass BaseEntity<ID>,
+      is set to <OrderId> for the Order.
+   3. So, at compile time, setId(...) will only accept an OrderId (not a UUID, String, etc.).
+   4. The equals and hashCode methods defined in BaseEntity will work with the OrderId (Entity Identifier) for Order.
+      This removes boilerplate code, i.e  equals and hashCode methods in each entity class, only based on the entity identifier.
+      SO we don't use @lombok here to generate equals and hashcode methods because we want to have custom
+      implementation based on the entity identifier.
+
  */
 public class Order extends AggregateRoot<OrderId> {
     private final CustomerId customerId;
@@ -29,14 +34,12 @@ public class Order extends AggregateRoot<OrderId> {
 
     public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
-    /**
-       1.  Initialize the ValueObjects [OrderId ,TrackingId, OrderStatus & initializing OrderItem]
-       2.  Set the initial state of the Order Aggregate Root to PENDING when a new order is created.
-       3.  Since Order extends AggregateRoot<OrderId> which extends BaseEntity<OrderId>,
-       4.  we can use the setId(new OrderID(random)) method of BaseEntity<OrderId> to set the Order
-     */
+
     public void initializeOrder() {
-     // Initialize the Identifier of the Order Entity (Value Object = OrderId)  using BaseEntity's setId() method
+     /**
+      So at compile time, setId(...) can only accept an OrderId (not a UUID, String, etc.).
+      That’s the main benefit of the generic type binding.
+      */
         super.setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;

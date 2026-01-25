@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/orders", produces = "application/vnd.api.v1+json")
 public class OrderController {
-
+    // Inject the Domain Module Input Port
     private final OrderApplicationService orderApplicationService;
 
     public OrderController(OrderApplicationService orderApplicationService) {

@@ -1,18 +1,24 @@
 package com.food.ordering.system.domain.entity;
 
 import java.util.Objects;
+
    /**
-    1. Create abstract class BaseEntity<ID> class with Generic <ID> variable.
-    2. Create private ID field with this Generic type <ID>  .
-    3. Define getter and setter for this id field.
-    4. Override equals() & hashCode() methods based on this id field.
-    5. This class will be extended by the entity classes in the domain layer.
-    6. It provides common functionality for entities, such as equality checks based on the identifier.
-       So, we are implementing the concept of Entity from Domain-Driven Design (DDD) & avoid code duplication
-       across multiple entity classes to obtain the identifier functionality overriding equals() & hashCode() methods.
+     The BaseEntity<ID> is an abstract class that centralizes the management of entity identifiers for all the entities
+     across the domain model i.e order domain , customer domain modules etc.
+
+     1. We create an abstract class BaseEntity<ID>, with generic type parameter <ID>.
+     2. We  define a field of this same generic type <ID>. i.e private ID id;
+     3. This ensures that setId(...) only accepts Type = ID.
+        So, gives compile-time checking: -
+
+     if ->  "Order extends BaseEntity<OrderId>", so the ID type is bound as OrderId, So,setId(...) only accepts OrderId
+             (not UUID, not CustomerId).
+             The equals and hashcode will be inherited by Order class from BaseEntity class & will compare based on OrderId
+             to compare the uniqueness .
     */
+
 public abstract class BaseEntity<ID> {
-    // Create private ID field with this Generic type <ID>
+  // Define a field "private ID id" field of the Generic type <ID> , this ensures that setId(...) only accepts Type ID .
     private ID id;
 
     public ID getId() {
@@ -23,7 +29,6 @@ public abstract class BaseEntity<ID> {
         this.id = id;
     }
 
-    // Override equals() & hashCode() methods based on this id field to identify the entity uniquely by its identifier.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

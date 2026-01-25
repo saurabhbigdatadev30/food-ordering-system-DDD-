@@ -3,6 +3,7 @@ package com.food.ordering.system.order.service.domain.valueobject;
 import java.util.Objects;
 import java.util.UUID;
 
+// immutable value object representing a street address
 public class StreetAddress {
     private final UUID id;
     private final String street;

@@ -18,21 +18,28 @@ public class Money {
         this.amount = setScale(Objects.requireNonNull(amount, "amount must not be null"));
     }
 
-    // Check if the amount is greater than zero , so first check if amount is not null and then compare it to > ZERO
+  /**
+   + equals vs compareTo()
+      The equals() is scale-sensitive . So  In this case below , if
+        amount = 0.00
+         a. this.amount.equals(BigDecimal.ZERO) = false
+         b. this.amount.compareTo(BigDecimal.ZERO) == 0 , so considers them equal in value
+
+   */
     public boolean isGreaterThanZero() {
         return this.amount != null && this.amount.compareTo(BigDecimal.ZERO) > 0;
     }
 
-
     // Check if the amount is greater than the amount of another Money object
     public boolean isGreaterThan(Money money) {
-        // Ensure the money object &  its amount are not null
+        // Ensure both Money objects and their amounts are not null
         Objects.requireNonNull(money, "Money must not be null");
         Objects.requireNonNull(money.getAmount(), "Money amount must not be null");
-        return this.amount != null && this.amount.compareTo(money.getAmount()) >= 0;
+        Objects.requireNonNull(this.amount, "Current money amount must not be null");
+        return this.amount.compareTo(money.getAmount()) >= 0;
     }
 
-
+    // Immutable , creates a new Money object with the sum of the current and another Money object's amounts
     public Money add(Money money) {
         Objects.requireNonNull(money, "Money  must not be null");
         Objects.requireNonNull(money.getAmount(), "Money amount must not be null");
@@ -41,14 +48,20 @@ public class Money {
 
     public Money subtract(Money money) {
         Objects.requireNonNull(money, "Money must not be null");
+        Objects.requireNonNull(money.getAmount(), "amount  must not be null");
         if (!isGreaterThan(money)) {
-            throw new IllegalArgumentException("Cannot subtract " + money.getAmount() + ": result would be negative. Current amount: " + this.amount);
+            throw new IllegalArgumentException(
+                    "Cannot subtract {}: result would be negative. Current amount: {}"
+                            .formatted(money.getAmount(), this.amount)
+            );
         }
         return new Money(setScale(this.amount.subtract(money.getAmount())));
     }
 
     public Money debitAmount(Money money) {
         if (this.amount.compareTo(money.getAmount()) < 0) {
+            Objects.requireNonNull(money, "Money must not be null");
+            Objects.requireNonNull(money.getAmount(), "amount  must not be null");
             throw new IllegalArgumentException(
                     "Debit amount %s exceeds current balance %s".formatted(money.getAmount(), this.amount)
             );
