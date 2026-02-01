@@ -3,18 +3,32 @@ package com.food.ordering.system.domain.entity;
 import java.util.Objects;
 
    /**
+
      The BaseEntity<ID> is an abstract class that centralizes the management of entity identifiers for all the entities
      across the domain model i.e order domain , customer domain modules etc.
 
      1. We create an abstract class BaseEntity<ID>, with generic type parameter <ID>.
      2. We  define a field of this same generic type <ID>. i.e private ID id;
      3. This ensures that setId(...) only accepts Type = ID.
-        So, gives compile-time checking: -
 
-     if ->  "Order extends BaseEntity<OrderId>", so the ID type is bound as OrderId, So,setId(...) only accepts OrderId
-             (not UUID, not CustomerId).
-             The equals and hashcode will be inherited by Order class from BaseEntity class & will compare based on OrderId
-             to compare the uniqueness .
+
+    ✅  When Order extends AggregateRoot<OrderId>
+         At compile time, the compiler binds:
+            - Generic type parameter: ID → OrderId
+            - Inherited field becomes (conceptually): private OrderId id;
+            - Type-safe methods: setId(OrderId) and OrderId getId()
+
+    // BaseEntity (as bound to OrderId)
+        public abstract class BaseEntity {
+        private OrderId id;  // ✅ Generic ID bound to OrderId
+
+        public void setId(OrderId id) {  // ✅ Type-safe setter
+        this.id = id;
+        }
+
+        public OrderId getId() {  // ✅ Type-safe getter
+        return this.id;
+    }
     */
 
 public abstract class BaseEntity<ID> {

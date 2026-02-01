@@ -5,14 +5,19 @@ import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 
-/*
- 1. OrderItem extends BaseEntity<ID> , sets the ID field to = OrderItemId . So the setId(..) method will accept OrderItemId type.
- 2. So the OrderItem class inherits the equals and hashcode methods from BaseEntity class which compares the identifier of the entity.
-    on OrderItemId.
- 3. The OrderItem class has a method initializeOrderItem(..) which sets the orderId and also calls the setId(..) method
-     of BaseEntity to set the OrderItemId.
+/**
+ When you write:
+ public class OrderItem extends BaseEntity<OrderItemId> ->  The compiler performs type substitution in BaseEntity<ID>:
+
+ 1. private ID id;                     → private OrderItemId id;
+ 2. public void setId(ID id)           → public void setId(OrderItemId id)
+ 3. public ID getId()                  → public OrderItemId getId()
+ 4. public boolean equals(Object o)    → Compares OrderItemId instances
+ 5. public int hashCode()              → Hash of OrderItemId
  */
+
 public class OrderItem extends BaseEntity<OrderItemId> {
+    // OrderItemId is set through super.setId(...) method from BaseEntity<OrderItemId>, so don't need to declare it here.
     private  OrderId orderId;
     private final Product product;
     private final int quantity;

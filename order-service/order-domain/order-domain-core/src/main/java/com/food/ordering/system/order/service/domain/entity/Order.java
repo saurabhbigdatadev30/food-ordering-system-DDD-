@@ -12,17 +12,19 @@ import java.util.UUID;
 
 
 /**
-    1.Order class is the AggregateRoot , so it extends the AggregateRoot<OrderId> .
-    2.The generic type parameter <ID> in AggregateRoot<ID> & in its superclass BaseEntity<ID>,
-      is set to <OrderId> for the Order.
-   3. So, at compile time, setId(...) will only accept an OrderId (not a UUID, String, etc.).
-   4. The equals and hashCode methods defined in BaseEntity will work with the OrderId (Entity Identifier) for Order.
-      This removes boilerplate code, i.e  equals and hashCode methods in each entity class, only based on the entity identifier.
-      SO we don't use @lombok here to generate equals and hashcode methods because we want to have custom
-      implementation based on the entity identifier.
-
+When Order extends AggregateRoot<OrderId>
+ Compiler replaces all occurrences of ID with OrderId: in the BaseEntity<ID> class
+      private OrderId id;                     ✅ Field type:OrderId i.e private ID id;
+      public void setId(OrderId id) { ... }   ✅ setter: OrderId
+      public OrderId getId() { ... }          ✅ getter: OrderId
+      public boolean equals(Object o) { ... } ✅ Compares OrderId
+      public int hashCode() { ... }           ✅ Hash of OrderId
+   The equals and hashCode methods are implemented in BaseEntity & compares the identifier of the entity i.e OrderId here.
+   These methods are inherited by Order class .
  */
+
 public class Order extends AggregateRoot<OrderId> {
+    // OrderId orderId; is set through super.setId(...) method from BaseEntity<OrderId>, so don't need to declare it here.
     private final CustomerId customerId;
     private final RestaurantId restaurantId;
     private final StreetAddress deliveryAddress;
@@ -36,10 +38,6 @@ public class Order extends AggregateRoot<OrderId> {
 
 
     public void initializeOrder() {
-     /**
-      So at compile time, setId(...) can only accept an OrderId (not a UUID, String, etc.).
-      That’s the main benefit of the generic type binding.
-      */
         super.setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;
