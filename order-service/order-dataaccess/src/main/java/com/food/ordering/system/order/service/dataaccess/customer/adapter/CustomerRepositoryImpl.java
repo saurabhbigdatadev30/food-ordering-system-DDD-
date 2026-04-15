@@ -11,20 +11,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class CustomerRepositoryImpl implements CustomerRepository {
-
+public class CustomerRepositoryImpl implements CustomerRepository
+{
     private final CustomerJpaRepository customerJpaRepository;
     private final CustomerDataAccessMapper customerDataAccessMapper;
 
     public CustomerRepositoryImpl(CustomerJpaRepository customerJpaRepository,
-                                  CustomerDataAccessMapper customerDataAccessMapper) {
+                                  CustomerDataAccessMapper customerDataAccessMapper)
+    {
         this.customerJpaRepository = customerJpaRepository;
         this.customerDataAccessMapper = customerDataAccessMapper;
     }
 
     @Override
-    public Optional<Customer> findCustomer(UUID customerId) {
-        return customerJpaRepository.findById(customerId).map(customerDataAccessMapper::customerEntityToCustomer);
+    public Optional<Customer> findCustomer(UUID customerId)
+    {
+       /**
+         1. customerJpaRepository.findById(customerId) returns Optional<CustomerEntity>
+
+         2. If the entity is not found, it returns Optional.empty() and the map function will not be executed.
+
+         3. If found, then convert Optional<CustomerEntity> to the domain entity object Optional<Customer>. .
+        */
+        return customerJpaRepository.findById(customerId) // returns DB entity
+                .map(customerDataAccessMapper::customerEntityToCustomer);
     }
 
     @Transactional

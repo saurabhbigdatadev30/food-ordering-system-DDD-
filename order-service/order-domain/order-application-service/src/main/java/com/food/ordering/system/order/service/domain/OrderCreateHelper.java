@@ -44,7 +44,8 @@ public class OrderCreateHelper {
     }
 
     @Transactional
-    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
+    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand)
+    {
         checkCustomer(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurant(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
@@ -54,10 +55,14 @@ public class OrderCreateHelper {
         return orderCreatedEvent;
     }
 
-    private Restaurant checkRestaurant(CreateOrderCommand createOrderCommand) {
+    private Restaurant checkRestaurant(CreateOrderCommand createOrderCommand)
+    {
+        // Build the Restaurant domain entity object [Restaurant] from the CreateOrderCommand
         Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
+
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findRestaurantInformation(restaurant);
-        if (optionalRestaurant.isEmpty()) {
+        if (optionalRestaurant.isEmpty())
+        {
             log.warn("Could not find restaurant with restaurant id: {}", createOrderCommand.getRestaurantId());
             throw new OrderDomainException("Could not find restaurant with restaurant id: " +
                     createOrderCommand.getRestaurantId());
@@ -67,10 +72,12 @@ public class OrderCreateHelper {
 
     private void checkCustomer(UUID customerId) {
         Optional<Customer> customer = customerRepository.findCustomer(customerId);
-        if (customer.isEmpty()) {
-            log.warn("Could not find customer with customer id: {}", customerId);
+        if (customer.isEmpty())
+        {
+            log.error("Could not find customer with customer id: {}", customerId);
             throw new OrderDomainException("Could not find customer with customer id: " + customer);
         }
+
     }
 
     private Order saveOrder(Order order) {

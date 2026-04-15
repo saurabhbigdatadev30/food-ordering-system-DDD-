@@ -6,12 +6,18 @@ import com.food.ordering.system.order.service.domain.entity.Customer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerDataAccessMapper {
-
+public class CustomerDataAccessMapper
+{
+   //  DB entity to domain layer entity object
     public Customer customerEntityToCustomer(CustomerEntity customerEntity) {
-        return new Customer(new CustomerId(customerEntity.getId()));
+     return Customer.builder()
+             .id(new CustomerId(customerEntity.getId()))
+             .build();
+
+
     }
 
+    // domain layer entity object to DB entity object
     public CustomerEntity customerToCustomerEntity(Customer customer) {
         return CustomerEntity.builder()
                 .id(customer.getId().getValue())

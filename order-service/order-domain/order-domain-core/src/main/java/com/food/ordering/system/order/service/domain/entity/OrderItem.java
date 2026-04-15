@@ -6,14 +6,15 @@ import com.food.ordering.system.domain.valueobject.OrderId;
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 
 /**
- When you write:
- public class OrderItem extends BaseEntity<OrderItemId> ->  The compiler performs type substitution in BaseEntity<ID>:
-
- 1. private ID id;                     → private OrderItemId id;
- 2. public void setId(ID id)           → public void setId(OrderItemId id)
- 3. public ID getId()                  → public OrderItemId getId()
- 4. public boolean equals(Object o)    → Compares OrderItemId instances
- 5. public int hashCode()              → Hash of OrderItemId
+ When we write:
+ public class OrderItem extends BaseEntity<OrderItemId> -> The compiler performs type substitution in
+ Before Substitution:                      After Substitution:
+ BaseEntity<ID>:                             BaseEntity<OrderItemId>:
+ 1. private ID id;                          → private OrderItemId id;
+ 2. public void setId(ID id)                → public void setId(OrderItemId id)
+ 3. public ID getId()                       → public OrderItemId getId()
+ 4. public boolean equals(Object o)         → Compares OrderItemId instances
+ 5. public int hashCode()                   → Hash of OrderItemId
  */
 
 public class OrderItem extends BaseEntity<OrderItemId> {

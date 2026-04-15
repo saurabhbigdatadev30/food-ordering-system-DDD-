@@ -173,7 +173,7 @@
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
                 <artifactId>kafka-consumer</artifactId>
-                <version>${pr oject.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>

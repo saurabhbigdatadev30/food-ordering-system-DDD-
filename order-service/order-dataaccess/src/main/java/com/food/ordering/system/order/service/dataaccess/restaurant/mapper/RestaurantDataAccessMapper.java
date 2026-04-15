@@ -22,6 +22,14 @@ public class RestaurantDataAccessMapper {
                 .collect(Collectors.toList());
     }
 
+    public List<Product> getRestaurantProducts(Restaurant restaurant) {
+         return restaurant.getProducts().stream()
+                 .map(product -> new Product(new ProductId(product.getId().getValue()),
+                         product.getName(),
+                         product.getPrice()))
+                 .collect(Collectors.toList());
+    }
+
     public Restaurant restaurantEntityToRestaurant(List<RestaurantEntity> restaurantEntities) {
         RestaurantEntity restaurantEntity =
                 restaurantEntities.stream().findFirst().orElseThrow(() ->

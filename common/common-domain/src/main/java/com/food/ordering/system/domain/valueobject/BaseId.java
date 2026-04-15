@@ -21,7 +21,7 @@ public abstract class BaseId<T> {
     }
 
     public T getValue() {
-        return value;
+        return this.value;
     }
 
     @Override

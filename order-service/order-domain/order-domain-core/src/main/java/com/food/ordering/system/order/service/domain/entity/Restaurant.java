@@ -6,6 +6,10 @@ import com.food.ordering.system.domain.valueobject.RestaurantId;
 import java.util.List;
 
 public class Restaurant extends AggregateRoot<RestaurantId> {
+    /*
+      RestaurantId is inherited using ths super.setId(),  so we will use the
+      builder pattern to set it.
+     */
     private final List<Product> products;
     private boolean active;
 
@@ -20,6 +24,7 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
     }
 
     public List<Product> getProducts() {
+
         return products;
     }
 
@@ -27,7 +32,10 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         return active;
     }
 
-    public static final class Builder {
+
+    public static final class Builder
+    {
+        // We need to manually change the Id (inherited from the BaseEntity)  to RestaurantId
         private RestaurantId restaurantId;
         private List<Product> products;
         private boolean active;

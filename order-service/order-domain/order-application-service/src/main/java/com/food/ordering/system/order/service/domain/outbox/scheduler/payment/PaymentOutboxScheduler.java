@@ -34,18 +34,26 @@ public class PaymentOutboxScheduler implements OutboxScheduler {
     @Scheduled(fixedDelayString = "${order-service.outbox-scheduler-fixed-rate}",
                 initialDelayString = "${order-service.outbox-scheduler-initial-delay}")
     public void processOutboxMessage() {
+
        Optional<List<OrderPaymentOutboxMessage>> outboxMessagesResponse =
                paymentOutboxHelper.getPaymentOutboxMessageByOutboxStatusAndSagaStatus(
                        OutboxStatus.STARTED,
                        SagaStatus.STARTED,
                        SagaStatus.COMPENSATING);
 
-       if (outboxMessagesResponse.isPresent() && outboxMessagesResponse.get().size() > 0) {
+       if (outboxMessagesResponse.isPresent() && outboxMessagesResponse.get().size() > 0)
+       {
            List<OrderPaymentOutboxMessage> outboxMessages = outboxMessagesResponse.get();
            log.info("Received {} OrderPaymentOutboxMessage with ids: {}, sending to message bus!",
                    outboxMessages.size(),
                    outboxMessages.stream().map(outboxMessage ->
                            outboxMessage.getId().toString()).collect(Collectors.joining(",")));
+          /**
+           1.Iterate the List<OrderPaymentOutboxMessage> and publish to the message bus using paymentRequestMessagePublisher.
+           2.After publishing each message, update the outbox status to OutboxStatus.COMPLETED
+           3.If the publishing is successful, or OutboxStatus.FAILED if there is an exception.
+           4.The updateOutboxStatus method is used as a callback to update the status after attempting to publish each message.
+           */
            outboxMessages.forEach(outboxMessage ->
                    paymentRequestMessagePublisher.publish(outboxMessage, this::updateOutboxStatus));
            log.info("{} OrderPaymentOutboxMessage sent to message bus!", outboxMessages.size());

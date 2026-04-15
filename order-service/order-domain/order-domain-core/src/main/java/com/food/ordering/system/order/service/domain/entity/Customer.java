@@ -20,6 +20,13 @@ public class Customer extends AggregateRoot<CustomerId> {
         super.setId(customerId);
     }
 
+    private Customer(Builder builder) {
+        super.setId(builder.id);
+        username = builder.username;
+        firstName = builder.firstName;
+        lastName = builder.lastName;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -30,5 +37,44 @@ public class Customer extends AggregateRoot<CustomerId> {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder
+    {
+        private CustomerId id;
+        private String username;
+        private String firstName;
+        private String lastName;
+
+        public Builder() {
+        }
+
+        public Builder id(CustomerId val) {
+            id = val;
+            return this;
+        }
+
+        public Builder username(String val) {
+            username = val;
+            return this;
+        }
+
+        public Builder firstName(String val) {
+            firstName = val;
+            return this;
+        }
+
+        public Builder lastName(String val) {
+            lastName = val;
+            return this;
+        }
+
+        public Customer build() {
+            return new Customer(this);
+        }
     }
 }

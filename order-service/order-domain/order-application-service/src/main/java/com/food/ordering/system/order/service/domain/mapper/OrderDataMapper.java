@@ -23,21 +23,40 @@ import java.util.stream.Collectors;
 @Component
 public class OrderDataMapper {
 
-    public Restaurant createOrderCommandToRestaurant(CreateOrderCommand createOrderCommand) {
+    public Restaurant createOrderCommandToRestaurant(CreateOrderCommand createOrderCommand)
+    {
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
-                .products(createOrderCommand.getItems().stream().map(orderItem ->
-                        new Product(new ProductId(orderItem.getProductId())))
-                        .collect(Collectors.toList()))
+                .products(createOrderCommand.getItems().stream()
+                         .map(orderItem ->
+                          new Product(new ProductId(orderItem.getProductId())))
+                         .collect(Collectors.toList()))
                 .build();
     }
-    
+
+    public Restaurant createOrderCommandToRestaurant1(CreateOrderCommand createOrderCommand)
+    {
+        return Restaurant.builder()
+                .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
+                // Set List<Product>
+                .products(createOrderCommand.getItems().stream()
+                        .map(orderItem ->
+                                new Product(new ProductId(orderItem.getProductId())))
+                .collect(Collectors.toList()))
+                .build();
+
+
+    }
+
+
+
     public Order createOrderCommandToOrder(CreateOrderCommand createOrderCommand) {
         return Order.builder()
                 .customerId(new CustomerId(createOrderCommand.getCustomerId()))
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
                 .deliveryAddress(orderAddressToStreetAddress(createOrderCommand.getAddress()))
                 .price(new Money(createOrderCommand.getPrice()))
+                // List<OrderItem>
                 .items(orderItemsToOrderItemEntities(createOrderCommand.getItems()))
                 .build();
     }
@@ -102,7 +121,8 @@ public class OrderDataMapper {
     }
 
     private List<OrderItem> orderItemsToOrderItemEntities(
-            List<com.food.ordering.system.order.service.domain.dto.create.OrderItem> orderItems) {
+            List<com.food.ordering.system.order.service.domain.dto.create.OrderItem> orderItems)
+    {
         return orderItems.stream()
                 .map(orderItem ->
                         OrderItem.builder()

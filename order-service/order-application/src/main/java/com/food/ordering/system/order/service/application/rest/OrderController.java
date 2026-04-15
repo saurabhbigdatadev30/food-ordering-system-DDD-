@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/orders", produces = "application/vnd.api.v1+json")
 public class OrderController {
-    // Inject the Domain Module Input Port
+   // Primary Adapter (Rest module) delegates to  InputPort (order-application-service) i.e OrderApplicationService"
     private final OrderApplicationService orderApplicationService;
 
     public OrderController(OrderApplicationService orderApplicationService) {
@@ -23,7 +23,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderCommand createOrderCommand) {
+    public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderCommand createOrderCommand)
+    {
         log.info("Creating order for customer: {} at restaurant: {}", createOrderCommand.getCustomerId(),
                 createOrderCommand.getRestaurantId());
         CreateOrderResponse createOrderResponse = orderApplicationService.createOrder(createOrderCommand);

@@ -7,6 +7,8 @@ import com.food.ordering.system.order.service.domain.dto.track.TrackOrderRespons
 
 import javax.validation.Valid;
 
+// Delegated from order-application module @Controller class .
+// The order-application-service module is added as dependency in order-application module for this delegation to work.
 public interface OrderApplicationService {
 
     CreateOrderResponse createOrder(@Valid CreateOrderCommand createOrderCommand);

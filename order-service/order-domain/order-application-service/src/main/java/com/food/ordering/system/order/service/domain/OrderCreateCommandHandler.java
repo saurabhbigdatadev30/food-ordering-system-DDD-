@@ -4,6 +4,7 @@ import com.food.ordering.system.order.service.domain.dto.create.CreateOrderComma
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper;
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentEventPayload;
 import com.food.ordering.system.order.service.domain.outbox.scheduler.payment.PaymentOutboxHelper;
 import com.food.ordering.system.outbox.OutboxStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +34,18 @@ public class OrderCreateCommandHandler {
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
+        // 1. Saves Order to DB with status = PENDING *** relies on DBOutputPort
         OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
         log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
         CreateOrderResponse createOrderResponse = orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder(),
                 "Order created successfully");
 
-        paymentOutboxHelper.savePaymentOutboxMessage(orderDataMapper
-                .orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent),
+        // 2. From the OrderCreatedEvent , build the OrderPaymentEventPayload
+        OrderPaymentEventPayload paymentEventPayload = orderDataMapper
+                .orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent);
+
+        // 3. From the OrderPaymentEventPayload build the Outbox table = [OrderPaymentOutboxMessage]
+        paymentOutboxHelper.savePaymentOutboxMessage(paymentEventPayload,
                 orderCreatedEvent.getOrder().getOrderStatus(),
                 orderSagaHelper.orderStatusToSagaStatus(orderCreatedEvent.getOrder().getOrderStatus()),
                 OutboxStatus.STARTED,

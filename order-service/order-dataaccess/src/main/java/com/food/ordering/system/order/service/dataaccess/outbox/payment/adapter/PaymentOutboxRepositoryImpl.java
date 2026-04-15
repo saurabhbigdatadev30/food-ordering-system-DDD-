@@ -38,7 +38,8 @@ public class PaymentOutboxRepositoryImpl implements PaymentOutboxRepository {
     @Override
     public Optional<List<OrderPaymentOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatus(String sagaType,
                                                                                             OutboxStatus outboxStatus,
-                                                                                            SagaStatus... sagaStatus) {
+                                                                                            SagaStatus... sagaStatus)
+    {
         return Optional.of(paymentOutboxJpaRepository.findByTypeAndOutboxStatusAndSagaStatusIn(sagaType,
                         outboxStatus,
                         Arrays.asList(sagaStatus))
